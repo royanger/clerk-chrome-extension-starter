@@ -1,87 +1,74 @@
-import "./App.css";
+import clerkLogo from '/clerk-logo-dark.png'
+import './App.css'
+import { useUser, useClerk, ClerkProvider, SignedIn, SignedOut, SignIn, SignUp} from '@clerk/chrome-extension'
+import { useNavigate, Routes, Route, MemoryRouter} from 'react-router-dom'
 
-import {
-  SignedIn,
-  SignedOut,
-  SignIn,
-  SignUp,
-  useClerk,
-  useUser,
-  ClerkProvider,
-} from "@clerk/chrome-extension";
-import {
-  useNavigate,
-  Routes,
-  Route,
-  MemoryRouter
-} from "react-router-dom";
-
-function HelloUser() {
-  const { isSignedIn, user } = useUser();
-  const clerk = useClerk();
+const HelloUser = () => {
+  const { isSignedIn, user} = useUser() 
+  const clerk = useClerk()
 
   if (!isSignedIn) {
-    return null;
+    return null
   }
 
   return (
-    <>
-      <p>Hi, {user.primaryEmailAddress?.emailAddress}!</p>
+  <>
+  <p>Hi, {user?.primaryEmailAddress?.emailAddress}</p>
       <p>
-        <button onClick={() => clerk.signOut()}>Sign out</button>
+<button onClick={() => clerk.signOut()}>
+  Sign Out
+</button>
       </p>
-    </>
-  );
+  </>
+  )
 }
 
-const publishableKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY || "";
 
-function ClerkProviderWithRoutes() {
-  const navigate = useNavigate();
+const pubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+if ( !pubKey ) {
+  throw new Error('You must add your Clerk Publishable Key to your .env file.')
+}
+
+const ClerkProviderWithRoutes = () => {
+  const naviage = useNavigate()
 
   return (
-    <ClerkProvider publishableKey={publishableKey} navigate={(to) => navigate(to)}>
-      <div className="App">
-        <header className="App-header">
-          <p>Welcome to Clerk Chrome Extension Starter!</p>
-          <a
-            className="App-link"
-            href="https://clerk.dev/docs"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn more about Clerk
-          </a>
+    <ClerkProvider publishableKey={pubKey} navigate={(to) => naviage(to)}>
+      <div>
+        <header>
+          <h1>Clerk Chrome Extension Starter</h1>
+          <img src={clerkLogo} className="logo" alt="Vite logo" />
         </header>
-        <main className="App-main">
+
+        <main>
           <Routes>
-            <Route
-              path="/sign-up/*"
-              element={<SignUp signInUrl="/" />}
-            />
-            <Route path='/' element={
+            <Route path="/sign-up/*" element={<SignUp signInUrl='/' />} />
+            <Route path="/" element={
               <>
                 <SignedIn>
                   <HelloUser />
                 </SignedIn>
                 <SignedOut>
-                  <SignIn afterSignInUrl="/" signUpUrl="/sign-up" />
+                  <SignIn afterSignInUrl="/" signUpUrl='/sign-up' />
                 </SignedOut>
-              </>
+                </>
             } />
-          </Routes>
+          </Routes> 
         </main>
       </div>
+
     </ClerkProvider>
-  );
+  )
 }
 
-function App() {
+
+const App = () => {
   return (
     <MemoryRouter>
-      <ClerkProviderWithRoutes />
+<ClerkProviderWithRoutes />
     </MemoryRouter>
-  );
+  )
 }
 
-export default App;
+export default App

@@ -1,15 +1,25 @@
 {
   "name": "Chrome React Extension with Clerk",
-  "description": "Test Chrome extensions with Clerk",
+  "description": "This is a example using React, Clerk and Vite to show how to use Clerk with a Chrome Extension.",
   "version": "0.1",
   "manifest_version": 3,
   "action": {
     "default_popup": "index.html",
     "default_title": "Open the popup"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["styles.css"]
+    }
+  ],
   "icons": {
-    "16": "logo192.png",
-    "48": "logo192.png",
-    "128": "logo192.png"
-  }
+    "16": "clerk-16.png",
+    "48": "clerk-48.png",
+    "128": "clerk-192.png"
+  },
+      "permissions": [
+        "identity",
+        "identity.email"
+    ]
 }
